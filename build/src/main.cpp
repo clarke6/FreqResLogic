@@ -1,7 +1,8 @@
-#include <iostream>
+ #include <iostream>
 #include "include/tsu.h"
 #include <vector>
 #include <cmath>
+#include "include/logger.h"
 
 using namespace std;
 
@@ -23,16 +24,17 @@ int main () {
 	float OldEventMin_HZ = 0;
 	float EventDelta_HZ = 0;
 	float OldEventDelta_HZ = 0;
-	float EventDelta_F = 0.026; //No explanation for this
+	float EventDelta_F = 0.026; //No explanation for this (floor delta?)
 	float EventMaxDelta_HZ = 0;
 	float EventTrigDelta_HZ = 0;
 	unsigned int EventDurationSec = 0;
 	float EventDelta_T = 10;
 	float EventDelta_T_HZ = 0;
 	float Event_HZ_Per_Sec = 0;
-	float kW_LowLimit; //This variable is never defined and always "null" in the data
+	float kW_LowLimit = 60 - EventDelta_F; //This variable is never defined and always "null" in the data
 	unsigned int start_time = 0;
 	unsigned int delta_time = 0;
+	string log_path = "/home/pi/Leighton/FreqResLogic/data/LOGS/";
 
 	vector<string> HZ_Data = tsu::FileToVector ("../data/Actual_HZ.csv", '\n');
 
@@ -111,6 +113,8 @@ int main () {
 			OneShot1 = true;
 			EventResponse_T = false;
 		}
+		Logger ("FreqResData", log_path)
+			<< EventDetected;
 	}
 
 	return 0;
