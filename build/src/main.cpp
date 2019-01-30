@@ -18,7 +18,8 @@ int main () {
 	float Actual_HZ = 0;
 	float Prev_HZ = 0;
 	float Delta_HZ = 0;
-	float MoveAvg_HZ = 60;
+	float Total_HZ = 0;
+	float MoveAvg_HZ = 60.00945663; //First value from spreadsheet data
 	float EventStart_HZ = 0;
 	float EventMin_HZ = 0;
 	float OldEventMin_HZ = 0;
@@ -113,8 +114,20 @@ int main () {
 			OneShot1 = true;
 			EventResponse_T = false;
 		}
-		Logger ("FreqResData", log_path)
-			<< EventDetected;
+		
+		if (i == 0) {
+			Total_HZ = MoveAvg_HZ;
+		} else {
+			Total_HZ = Total_HZ + Actual_HZ;
+			MoveAvg_HZ = Total_HZ / (i+1);
+		}
+
+		Logger ("FreqResData2", log_path)
+			<< EventDetected << ","
+			<< MoveAvg_HZ << ","
+			<< Event_HZ_Per_Sec << ","
+			<< EventMin_HZ << ","
+			<< EventStart_HZ << ",";
 	}
 
 	return 0;
