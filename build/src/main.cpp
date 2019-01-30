@@ -64,7 +64,7 @@ int main () {
 				EventStart_HZ = abs(Delta_HZ) + Actual_HZ;
 				EventMin_HZ = 99;
 			}
-			if (Actual_HZ < OldEventMin_HZ) {
+			if (Actual_HZ < EventMin_HZ) {
 				EventMin_HZ = Actual_HZ;
 			}
 			if (Actual_HZ - OldEventMin_HZ > 0.001) {
@@ -115,14 +115,17 @@ int main () {
 			EventResponse_T = false;
 		}
 		
-		if (i == 0) {
-			Total_HZ = MoveAvg_HZ;
+		if (i < 59) {
+			MoveAvg_HZ = Actual_HZ;
 		} else {
-			Total_HZ = Total_HZ + Actual_HZ;
-			MoveAvg_HZ = Total_HZ / (i+1);
+			MoveAvg_HZ = 0;
+			for (unsigned int k = 0; k < 60; k++) {
+				MoveAvg_HZ = MoveAvg_HZ + stof(HZ_Data.at(i-k));
+			}
+			MoveAvg_HZ = MoveAvg_HZ/60;
 		}
 
-		Logger ("FreqResData2", log_path)
+		Logger ("FreqResData3", log_path)
 			<< EventDetected << ","
 			<< MoveAvg_HZ << ","
 			<< Event_HZ_Per_Sec << ","
