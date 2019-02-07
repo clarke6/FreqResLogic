@@ -25,19 +25,20 @@ int main () {
 	float OldEventMin_HZ = 0;
 	float EventDelta_HZ = 0;
 	float OldEventDelta_HZ = 0;
-	float EventDelta_F = 0.026; //No explanation for this (floor delta?)
+	float EventDelta_F = 0.024; //No explanation for this (floor delta?) (used 0.026 for data set 1)
 	float EventMaxDelta_HZ = 0;
 	float EventTrigDelta_HZ = 0;
 	unsigned int EventDurationSec = 0;
 	float EventDelta_T = 10;
 	float EventDelta_T_HZ = 0;
 	float Event_HZ_Per_Sec = 0;
-	float kW_LowLimit = 60 - EventDelta_F; //This variable is never defined and always "null" in the data
+	//float kW_LowLimit = 60 - EventDelta_F; //This variable is never defined and always "null" in the data
+	float kW_LowLimit = 59.97;
 	unsigned int start_time = 0;
 	unsigned int delta_time = 0;
 	string log_path = "/home/pi/Leighton/FreqResLogic/data/LOGS/";
 
-	vector<string> HZ_Data = tsu::FileToVector ("../data/Actual_HZ.csv", '\n');
+	vector<string> HZ_Data = tsu::FileToVector ("../data/Actual_HZ2.csv", '\n');
 
 	for (unsigned int i = 0; i < HZ_Data.size(); i++) {
 		Actual_HZ = stof(HZ_Data.at(i));
@@ -67,7 +68,7 @@ int main () {
 			if (Actual_HZ < EventMin_HZ) {
 				EventMin_HZ = Actual_HZ;
 			}
-			if (Actual_HZ - OldEventMin_HZ > 0.001) {
+			if (Actual_HZ - EventMin_HZ > 0.001) {
 				NegDeviation = false;
 				EventDurationSec = 0;
 				EventDelta_HZ = 0;
@@ -106,6 +107,7 @@ int main () {
 			if (EventResponse_T == false) {
 				EventResponse_T = true;
 				start_time = i;
+				delta_time = 0;
 			} else if (EventResponse_T == true) {
 				delta_time = i - start_time;
 			}
